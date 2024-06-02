@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сервис комментариев</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #bceff8;
+        }
+        .container {
+            max-width: 100vw;
+            display: flex;
+            padding: 3.125rem;
+            gap: 9.375rem;
+        }
+        h1{
+            color: rgb(246, 255, 77);
+            margin-bottom: 1.25rem;
+            font-size: 2.375rem;
+        }
+        h2{
+            color: rgb(30, 239, 44);
+            margin-bottom: .625rem;
+            font-size: 1.25rem;
+        }
+        .left{
+            display: flex;
+            flex-direction: column;
+            gap: .4375rem;
+            width: 40vw;
+        }
+        .right{
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        }
+        .comment {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+        img {
+            width: 3.125rem;
+            height:auto;
+            border-radius: 50%;
+            margin-right: .625rem; 
+        }
+        .comment-details {
+            display: flex;
+            flex-direction: column; 
+        }
+        .comment-name,
+        .comment-text {
+            font-weight: bold; 
+            margin-top: .3125rem;
+        }
+        .comment-text{
+            align-items: end;
+            font-weight: 400;
+        }
+        .comment-name {
+            font-weight: 700;
+            margin-right: 1.25rem;
+        }
+        input, textarea {
+            width: 80%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #da1414;
+            border-radius: 4px;
+            font-size: 1rem;
+            outline: none;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #d80c61;
+            color: rgb(246, 255, 77);
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            width: 8vw;
+        }
+        button:hover {
+            background-color: #e33980;
+        }
+        #messageInput {
+        height: 30vh;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+        <h1>Cервис комментариев со спам фильтром</h1>
+        <h2>Оставьте ваш комментарий</h2>
+        <input type="text" id="nameInput" placeholder="Введите имя">
+        <input type="text" id="avatarInput" placeholder="Введите URL аватара">
+        <textarea id="messageInput" placeholder="Оставьте комментарий"></textarea>
+        <button id="submitButton">Отправить</button>
+    </div>
+    <div class="right">
+        <h2 class="chat">Чат</h2>
+        <div id="commentsContainer"></div>
+    </div>
+</div>
+    <script>
+
+        function formatName(name) {
+            return name[0].toUpperCase() + name.slice(1).toLowerCase();
+        }
+
+        function checkSpam(str) {
+            return str.replace(/viagra|xxx/gi, '***');
+        }  
+
+        function addComment() {
+            const nameInput = document.getElementById('nameInput');
+            const avatarInput = document.getElementById('avatarInput');
+            const messageInput = document.getElementById('messageInput');
+            const commentsContainer = document.getElementById('commentsContainer');
+
+            const name = formatName(nameInput.value.trim());
+            const avatar = avatarInput.value.trim();
+            const message = checkSpam(messageInput.value.trim());
+
+            if(name && message){
+
+                const comment = document.createElement('div');
+                comment.classList.add('comment');
+
+                const avatarImg = document.createElement('img');
+                avatarImg.src = avatar || 'default-avatar.png';
+
+                const commentDetails = document.createElement('div');
+
+                const commentName = document.createElement('span');
+                commentName.classList.add('comment-name');
+                commentName.textContent = name;
+
+                const commentText = document.createElement('span');
+                commentText.classList.add('comment-text');
+                commentText.textContent = message;
+
+                commentDetails.appendChild(commentName);
+                commentDetails.appendChild(commentText);
+                comment.appendChild(avatarImg);
+                comment.appendChild(commentDetails);
+                commentsContainer.appendChild(comment);
+
+                nameInput.value = '';
+                avatarInput.value = '';
+                messageInput.value = '';
+            }
+        }
+        const button = document.getElementById('submitButton');
+        button.addEventListener('click',addComment);
+    </script>
+</body>
+</html>
