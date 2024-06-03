@@ -48,7 +48,8 @@
         }
         img {
             width: 3.125rem;
-            height:auto;
+            height:3.125rem;
+            background-size: cover;
             border-radius: 50%;
             margin-right: .625rem; 
         }
@@ -138,7 +139,7 @@
                 comment.classList.add('comment');
 
                 const avatarImg = document.createElement('img');
-                avatarImg.src = avatar || 'default-avatar.png';
+                avatarImg.src = avatar || 'default-avatar.jpg';
 
                 const commentDetails = document.createElement('div');
 
