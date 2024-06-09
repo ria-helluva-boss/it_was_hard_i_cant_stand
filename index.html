@@ -95,7 +95,12 @@
         #messageInput {
         height: 30vh;
         }
-        
+        .comment-date {
+            font-size: 0.875rem;
+            color: #888;
+            margin-top: 0.3125rem;
+            margin-left: .625rem;
+}
     </style>
 </head>
 <body>
@@ -103,8 +108,10 @@
         <div class="left">
         <h1>Cервис комментариев со спам фильтром</h1>
         <h2>Оставьте ваш комментарий</h2>
+        <input type="radio" name="showName" value="yes" id="showNameYes" checked> Показать имя
+        <input type="radio" name="showName" value="no" id="showNameNo"> Не показывать имя
         <input type="text" id="nameInput" placeholder="Введите имя">
-        <input type="image" id="avatarInput" placeholder="Введите URL аватара">
+        <input type="text" id="avatarInput" placeholder="Введите URL аватара">
         <textarea id="messageInput" placeholder="Оставьте комментарий"></textarea>
         <button type = "submit" id="submitButton">Отправить</button>
     </div>
@@ -116,22 +123,44 @@
     <script>
 
         function formatName(name) {
+            if (!name) return '';
             return name[0].toUpperCase() + name.slice(1).toLowerCase();
         }
 
         function checkSpam(str) {
             return str.replace(/viagra|xxx/gi, '***');
         }  
-
+        const defaultAvatars = [
+    'avatar1.jpg',
+    'avatar2.jpg',
+    'avatar3.jpg',
+    'avatar4.jpg',
+    'avatar5.jpg',
+    'avatar6.jpg'
+];
+function getRandomAvatar() {
+    const randomIndex = Math.floor(Math.random() * defaultAvatars.length);
+    return defaultAvatars[randomIndex];
+}
         function addComment() {
             const nameInput = document.getElementById('nameInput');
             const avatarInput = document.getElementById('avatarInput');
             const messageInput = document.getElementById('messageInput');
             const commentsContainer = document.getElementById('commentsContainer');
+            const showNameYes = document.getElementById('showNameYes').checked;
+            const showNameNo = document.getElementById('showNameNo').checked;
 
-            const name = formatName(nameInput.value.trim());
+            let name = formatName(nameInput.value.trim());
+            name = name ? formatName(name) : '';
+
             const avatar = avatarInput.value.trim();
             const message = checkSpam(messageInput.value.trim());
+            const currentDate = new Date();
+            const formattedDate = currentDate.toLocaleString();
+
+            if (showNameNo || !name) {
+                name = 'username';
+            }
 
             if(name && message){
 
@@ -139,7 +168,7 @@
                 comment.classList.add('comment');
 
                 const avatarImg = document.createElement('img');
-                avatarImg.src = avatar || 'default-avatar.jpg';
+                avatarImg.src = avatar || getRandomAvatar();
 
                 const commentDetails = document.createElement('div');
 
@@ -151,8 +180,13 @@
                 commentText.classList.add('comment-text');
                 commentText.textContent = message;
 
+                const commentDate = document.createElement('span');
+                commentDate.classList.add('comment-date');
+                commentDate.textContent = formattedDate;
+
                 commentDetails.appendChild(commentName);
                 commentDetails.appendChild(commentText);
+                commentDetails.appendChild(commentDate);
                 comment.appendChild(avatarImg);
                 comment.appendChild(commentDetails);
                 commentsContainer.appendChild(comment);
